@@ -7,6 +7,7 @@ public class Arena {
     public static final int ANCHO = 18;   // tiles en X
     public static final int ALTO = 32;    // tiles en Y
 
+    public String background = "arena.png"; 
     // Zonas de la arena
     private Zona zonaJugador1;
     private Zona zonaJugador2;
@@ -44,6 +45,7 @@ public class Arena {
         torreReyJugador2 = new Torre("Rey J2", 8.5, 31, 2534, 90, 1.0, 7.0);
         torrePrincesaIzquierdaJ2 = new Torre("Princesa Izq J2", 3, 29, 1400, 90, 0.8, 7.5);
         torrePrincesaDerechaJ2 = new Torre("Princesa Der J2", 14, 29, 1400, 90, 0.8, 7.5);
+        this.background = background;
     }
 
     // Getters

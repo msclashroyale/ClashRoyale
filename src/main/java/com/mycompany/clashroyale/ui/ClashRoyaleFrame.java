@@ -1,7 +1,6 @@
 package com.mycompany.clashroyale.ui;
 
-import com.mycompany.clashroyale.model.Baraja;
-import com.mycompany.clashroyale.model.Carta;
+import com.mycompany.clashroyale.model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,56 +10,69 @@ import java.util.List;
 
 public class ClashRoyaleFrame extends JFrame {
 
-    public ClashRoyaleFrame(Baraja baraja) {
+    private Partida partida;
+
+    public ClashRoyaleFrame(Partida partida) {
+        this.partida = partida;
+
         setTitle("Clash Royale");
         setSize(720, 1280);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // 1) Cargar imagen de fondo (primero classpath, luego disco)
-        //    Cambiá el nombre si tu archivo es otro (ideal: PNG/JPG)
-        Image fondoArena = cargarImagenFlexible("/imagenes/arena.png"); // <-- poné tu archivo acá
+        // 1) Fondo de arena
+        Image fondoArena = cargarImagenFlexible("/imagenes/arena.png");
         BackgroundPanel root = new BackgroundPanel(fondoArena);
         root.setLayout(new BorderLayout());
         setContentPane(root);
 
-        // 2) Grid 2x4 transparente
-        JPanel grid = new JPanel(new GridLayout(2, 4, 10, 10));
+        // 2) Mostrar el mazo del Jugador 1 (ejemplo)
+        JPanel gridJugador1 = construirPanelMazo(partida.getJugador1().getMano());
+        root.add(gridJugador1, BorderLayout.SOUTH);
+
+        // Mazo Jugador 2 arriba
+        JPanel gridJugador2 = construirPanelMazo(partida.getJugador2().getMano());
+        root.add(gridJugador2, BorderLayout.NORTH);
+
+        // ⚡ Si quisieras mostrar también el mazo del Jugador 2:
+        // JPanel grid2 = construirPanelMazo(partida.getJugador2().getMazo());
+        // root.add(grid2, BorderLayout.NORTH);
+    }
+
+    private JPanel construirPanelMazo(List<Carta> cartas) {
+        JPanel grid = new JPanel(new GridLayout(1, 8, 10, 10)); // Mazo de 8 cartas
         grid.setOpaque(false);
 
-        List<Carta> cartas = baraja.getCartas();
         for (Carta carta : cartas) {
             JPanel cartaPanel = construirPanelCarta(carta);
             grid.add(cartaPanel);
         }
 
-        root.add(grid, BorderLayout.CENTER);
+        return grid;
     }
 
     private JPanel construirPanelCarta(Carta carta) {
         JPanel cartaPanel = new JPanel(new BorderLayout());
         cartaPanel.setOpaque(false);
 
-        // 3) Cargar imagen de la carta (ruta puede ser classpath o disco)
+        // Imagen de carta
         ImageIcon icono = cargarIconoFlexible(carta.getImagen());
         JLabel lblImagen;
         if (icono != null) {
-            Image img = icono.getImage().getScaledInstance(150, 200, Image.SCALE_SMOOTH);
+            Image img = icono.getImage().getScaledInstance(100, 140, Image.SCALE_SMOOTH);
             lblImagen = new JLabel(new ImageIcon(img));
         } else {
-            // Placeholder si no se pudo cargar
             lblImagen = new JLabel("(sin imagen)", SwingConstants.CENTER);
-            lblImagen.setPreferredSize(new Dimension(150, 200));
+            lblImagen.setPreferredSize(new Dimension(80, 120));
             lblImagen.setForeground(Color.WHITE);
         }
         lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
 
-     
         cartaPanel.add(lblImagen, BorderLayout.CENTER);
         return cartaPanel;
     }
 
-    /** Intenta cargar un ImageIcon desde classpath o disco (relativo a user.dir o absoluto). */
+    /** Intenta cargar un ImageIcon desde classpath o disco. */
     private ImageIcon cargarIconoFlexible(String ruta) {
         if (ruta == null || ruta.isEmpty()) return null;
 
@@ -68,7 +80,7 @@ public class ClashRoyaleFrame extends JFrame {
         URL url = getClass().getResource(ruta.startsWith("/") ? ruta : "/" + ruta);
         if (url != null) return new ImageIcon(url);
 
-        // 2) disco: si la ruta no es absoluta, la arma con user.dir
+        // 2) disco
         File f = new File(ruta);
         if (!f.isAbsolute()) f = new File(System.getProperty("user.dir"), ruta);
         if (f.exists()) return new ImageIcon(f.getAbsolutePath());
@@ -77,7 +89,7 @@ public class ClashRoyaleFrame extends JFrame {
         return null;
     }
 
-    /** Igual que arriba pero devuelve Image (útil para el fondo). */
+    /** Igual que arriba pero devuelve Image (útil para fondo). */
     private Image cargarImagenFlexible(String ruta) {
         ImageIcon icon = cargarIconoFlexible(ruta);
         return icon != null ? icon.getImage() : null;
@@ -98,7 +110,6 @@ public class ClashRoyaleFrame extends JFrame {
             if (background != null) {
                 g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
             } else {
-                // Color de respaldo si no hay imagen
                 g.setColor(new Color(25, 30, 45));
                 g.fillRect(0, 0, getWidth(), getHeight());
             }

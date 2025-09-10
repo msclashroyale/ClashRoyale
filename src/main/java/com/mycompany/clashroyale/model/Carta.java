@@ -37,4 +37,5 @@ public class Carta {
     // Getters
     public String getNombre() { return nombre; }
     public String getImagen() { return imagen; }
+    public int getCostoElixir() { return costoElixir;}
 }
