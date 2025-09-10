@@ -12,14 +12,14 @@ import java.util.List;
 public class ClashRoyaleFrame extends JFrame {
 
     public ClashRoyaleFrame(Baraja baraja) {
-        setTitle("Clash Royale - Baraja Aleatoria");
-        setSize(600, 800);
+        setTitle("Clash Royale");
+        setSize(720, 1280);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // 1) Cargar imagen de fondo (primero classpath, luego disco)
         //    Cambiá el nombre si tu archivo es otro (ideal: PNG/JPG)
-        Image fondoArena = cargarImagenFlexible("/imagenes/arena.jpg"); // <-- poné tu archivo acá
+        Image fondoArena = cargarImagenFlexible("/imagenes/arena.png"); // <-- poné tu archivo acá
         BackgroundPanel root = new BackgroundPanel(fondoArena);
         root.setLayout(new BorderLayout());
         setContentPane(root);
@@ -27,7 +27,6 @@ public class ClashRoyaleFrame extends JFrame {
         // 2) Grid 2x4 transparente
         JPanel grid = new JPanel(new GridLayout(2, 4, 10, 10));
         grid.setOpaque(false);
-        grid.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         List<Carta> cartas = baraja.getCartas();
         for (Carta carta : cartas) {
@@ -56,18 +55,8 @@ public class ClashRoyaleFrame extends JFrame {
         }
         lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JLabel lblNombre = new JLabel(carta.getNombre(), SwingConstants.CENTER);
-        lblNombre.setForeground(Color.WHITE);
-        lblNombre.setFont(lblNombre.getFont().deriveFont(Font.BOLD, 16f));
-
-        // Opcional: marco suave
-        cartaPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(255,255,255,100), 1),
-                BorderFactory.createEmptyBorder(6,6,6,6)
-        ));
-
+     
         cartaPanel.add(lblImagen, BorderLayout.CENTER);
-        cartaPanel.add(lblNombre, BorderLayout.SOUTH);
         return cartaPanel;
     }
 
