@@ -57,4 +57,32 @@ public class Jugador {
     public int getElixir() { return elixir; }
     public Baraja getBaraja() { return baraja; }
     public List<Carta> getMano() { return mano; }
+    
+    public boolean respawnearCarta(Arena arena, int x, int y) {
+        if (mano.isEmpty()) return false;
+
+        // Elegir carta aleatoria de la mano
+        Carta carta = mano.get((int)(Math.random() * mano.size()));
+
+        if (carta != null && elixir >= carta.getCostoElixir()) {
+            if (gastarElixir(carta.getCostoElixir())) {
+                if (arena.colocarCarta(carta, x, y)) {
+                    System.out.println(nombre + " colocó " + carta.getNombre() +
+                                       " en [" + x + "," + y + "] (elixir restante: " + elixir + ")");
+                }
+
+                // Reemplazar por la próxima carta de la baraja
+                int index = mano.indexOf(carta);
+                mano.set(index, baraja.getCartas().get(proximaCarta));
+                proximaCarta = (proximaCarta + 1) % baraja.getCartas().size();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
 }
